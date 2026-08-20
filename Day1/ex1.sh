@@ -1,5 +1,10 @@
-conda export > msds692_environment.yml --no-build
-conda deactivate
-conda remove -n msds692 --all
-conda env create -f msds692_environment.yml -n msds692
-conda env update -f msds602_environment.yml -n msds692
+pip list --format=freeze 
+
+deactivate
+
+rm -rf .venv
+
+python -m venv .venv
+
+.venv/bin/pip install -r requirements.txt
+.venv/bin/pip install —upgrade -r requirements.txt
