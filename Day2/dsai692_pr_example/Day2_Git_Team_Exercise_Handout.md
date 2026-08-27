@@ -6,15 +6,9 @@
 
 ## Description
 
-Your team maintains a tiny command-line app called **Team Toolbox**. Each of you adds
-one tool. The catch: all three of you have to edit **the same two files** —
-`toolbox.py` and `README.md` — so git cannot merge everything for you.
+Your team maintains an app called **Toolbox**. You will all work in **one shared repository**, and each will work on a branch for a tool. There are times that all three of you have to edit the same two files, `toolbox.py` and `README.md`. Git cannot merge everything for you and **this will produce merge conflicts on purpose, and resolve them.**
 
-That is the whole point. You will produce merge conflicts on purpose, and resolve them.
-
-You will all work in **one shared repository**, and each will work on a branch. This is how
-most teams work day to day: one repo, everyone a collaborator, nobody commits
-straight to `main`.
+This is how most teams work day to day at work: one repo, everyone a collaborator, **nobody (including the owner) commits straight to `main`**. 
 
 ---
 
@@ -29,17 +23,14 @@ straight to `main`.
 **Merge order is fixed: A, then B, then C.** A merges clean. B creates a conflict.
 C creates a bigger one. Everyone sees a different versions of the same files.
 
-> **One rule for the whole exercise: nobody pushes to `main`.** Every change reaches
-> `main` through a pull request — including A's.
 
 ### Which half am I in?
-
 You will keep switching between your laptop and github.com. Losing track of which is
 the #1 way to get stuck. Here is the whole exercise on one axis:
 
 | # | Who | Where | What happens |
 | --- | --- | --- | --- |
-| 1 | A | laptop | push the starter code |
+| 1 | A | laptop | Create a repo & push the starter code |
 | 2 | A | github | Settings → Collaborators → add B and C |
 | 3 | B, C | github | accept the invitation |
 | 4 | all | laptop | clone, branch, edit, commit |
@@ -73,7 +64,7 @@ git push -u origin main
 ```
 
 3. Add your teammates: repo → **Settings** → **Collaborators** → **Add people** →
-   their GitHub usernames.
+   their GitHub usernames (it appears on their github url. ex. https://github.com/**dianewoodbridge**/).
 4. Share the repo URL with your teammates.
 
 ### Members B and C
@@ -86,7 +77,7 @@ git push -u origin main
 ```bash
 git clone https://github.com/<A-username>/dsai692_pr_example.git
 cd dsai692_pr_example
-git remote -v
+git remote -v # this shows all remote repo
 ```
 
 You should see two lines, both `origin`, both pointing at A's repo. **You all share
@@ -101,7 +92,6 @@ python toolbox.py shout hello world     # -> HELLO WORLD!
 ---
 
 ## Step 1 — Make your branch and your change (5 min)
-
 Everyone works **at the same time**. Do not wait for each other.
 
 ```bash
@@ -197,7 +187,7 @@ Click through the four tabs once so you know what's there:
 | --- | --- |
 | **Conversation** | your description, comments, and the merge box at the bottom |
 | **Commits** | the commits on your branch |
-| **Checks** | automated tests (empty here — real projects run CI) |
+| **Checks** | automated tests (empty here — typically you set projects to run continuous integration (CI)) |
 | **Files changed** | the diff your reviewer reads |
 
 Use this PR description template:
@@ -249,8 +239,8 @@ once A's PR is merged. That message is your cue for Step 4.
 
 Everyone: refresh B's and C's PR pages. They are now marked as conflicted.
 
-> **Two separate copies.** A merged on **github.com**. Each member's *laptop* has no idea —
-> `git log` there still shows the old commit until he/she pulls. That is what created B's and C's conflicts, and it is why Step 4 starts with `fetch`.
+> **Two separate copies.** A merged on **github.com**. Each member's *laptop* has no idea.
+> `git log` still shows the old commit until he/she pulls. That is what created B's and C's conflicts, and it is why Step 4 starts with `fetch`.
 
 > ⚠️ **B and C: you will see a "Resolve conflicts" button on your PR. Don't click it.**
 > GitHub can resolve simple conflicts in the browser, but today the point is to do it
@@ -268,9 +258,9 @@ git fetch origin
 git merge origin/main
 ```
 
-Note : `git fetch` only downloads remote changes to your local repository without altering your code, while `git pull` downloads those changes and automatically merges them into your active working files
+Note : `git fetch` only downloads remote changes to your local repository without altering your code, while `git pull` downloads those changes and automatically merges them into your active working files.
 
-git stops and tells you exactly what it could not decide:
+If it cannot resolve conflict, git stops and tells you exactly what it could not decide:
 
 ```
 Auto-merging README.md
@@ -279,23 +269,6 @@ Auto-merging toolbox.py
 CONFLICT (content): Merge conflict in toolbox.py
 Automatic merge failed; fix conflicts and then commit the result.
 ```
-
-```bash
-git status --short
-```
-
-```
-UU README.md
-A  notes/ana-lead.md
-UU toolbox.py
-A  tools/reverse.py
-```
-
-> **Read this before you fix anything.** `UU` = both of you updated it, git needs *you*.
-> `A` = added cleanly, no help needed. A's new file `tools/reverse.py` and their note
-> merged with zero fuss, because nobody else touched them. **Conflicts come from
-> shared lines, not from shared projects.**
-
 Open `toolbox.py`. You will see:
 
 ```python
@@ -319,7 +292,7 @@ from tools.reverse import reverse
 from tools.wordcount import word_count
 ```
 
-Do the same for the `TOOLS` registry and for the README table row. Then:
+Do the same for the `TOOLS` registry and for the README table row. Then try the following:
 
 ```bash
 grep -rn "<<<<<<<\|>>>>>>>" .      # must print nothing
@@ -358,7 +331,7 @@ Same resolution: keep everything, drop the markers, verify, commit, push.
 git fetch origin
 git merge origin/main
 # ... resolve toolbox.py and README.md ...
-grep -rn "<<<<<<<\|>>>>>>>" .
+grep -rn "<<<<<<<\|>>>>>>>" . # must print nothing
 python toolbox.py initials data science and ai      # DSAA
 git add .
 git commit -m "Merge origin/main into feature/initials; keep all three tools"
@@ -374,7 +347,7 @@ git push origin feature/initials
 
 ## Step 6 — Sync, verify, clean up (5 min)
 
-Everyone:
+**Everyone:**
 
 ```bash
 git switch main
@@ -403,11 +376,11 @@ git branch -d feature/<your-tool>          # your laptop
 git push origin -d feature/<your-tool>     # the shared repo
 ```
 
-or on **github.com**: open your merged PR → **Delete branch** on the purple banner.
-(Changed your mind? The same spot offers **Restore branch**.)
+or on **github.com**: open your merged PR → **Delete branch** on the banner.
+(The same spot offers **Restore branch**, in case you want to reverse your decision.)
 
-Since you share one repo, deleting a remote branch deletes it **for everyone**. Only
-delete your own, and only after your PR is merged.
+Since you share one repo, deleting a remote branch deletes it **for everyone**. Therefore, only
+delete your own only after your PR is merged.
 
 ---
 
@@ -420,23 +393,3 @@ delete your own, and only after your PR is merged.
 - [ ] Feature branches deleted
 - [ ] Nobody ever pushed directly to `main`
 - [ ] Everyone can explain what `HEAD` meant in their own conflict
-
-
----
-
-## Command reference
-
-| Goal | Command |
-| --- | --- |
-| Create + switch to a branch | `git switch -c feature/x` |
-| Switch to an existing branch | `git switch main` |
-| Where am I? | `git branch` (star marks current) |
-| Send my branch to the shared repo | `git push origin feature/x` |
-| Get the latest, don't merge yet | `git fetch origin` |
-| Bring `main` into my branch | `git merge origin/main` |
-| See what conflicted | `git status --short` (`UU` = needs you) |
-| Undo a merge in progress | `git merge --abort` |
-| Finish a resolved merge | `git add <files>` then `git commit` |
-| Update my local `main` | `git pull origin main` |
-| See the branch structure | `git log --graph --oneline --all` |
-| Delete branch, local / shared | `git branch -d x` / `git push origin -d x` |
